@@ -1,78 +1,83 @@
-// Smooth scroll for all links
-document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        const target = document.querySelector(this.getAttribute('href'));
-
-        if(target){
-            target.scrollIntoView({
-                behavior: "smooth"
-            });
-        }
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute("href")).scrollIntoView({
+      behavior: "smooth"
     });
+  });
 });
 
-
-// Fade in gallery images
-const images = document.querySelectorAll(".gallery img");
-
+// Fade in animation
 const observer = new IntersectionObserver((entries)=>{
-
     entries.forEach(entry=>{
-
         if(entry.isIntersecting){
-
             entry.target.style.opacity="1";
             entry.target.style.transform="translateY(0)";
         }
-
     });
+},{threshold:.2});
+
+document.querySelectorAll(".quote,.letter,.music,.gallery img").forEach(el=>{
+    el.style.opacity="0";
+    el.style.transform="translateY(50px)";
+    el.style.transition="all .8s ease";
+    observer.observe(el);
+});
+
+// Fullscreen gallery
+document.querySelectorAll(".gallery img").forEach(img=>{
+
+img.onclick=()=>{
+
+const overlay=document.createElement("div");
+
+overlay.style.cssText=`
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.92);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99999;
+cursor:pointer;
+`;
+
+const photo=document.createElement("img");
+
+photo.src=img.src;
+
+photo.style.cssText=`
+max-width:90%;
+max-height:90%;
+border-radius:20px;
+box-shadow:0 20px 60px rgba(0,0,0,.5);
+`;
+
+overlay.appendChild(photo);
+
+overlay.onclick=()=>overlay.remove();
+
+document.body.appendChild(overlay);
+
+}
 
 });
 
-images.forEach(img=>{
+// Hero button animation
+const btn=document.querySelector("button");
 
-    img.style.opacity="0";
-    img.style.transform="translateY(40px)";
-    img.style.transition="0.7s";
+btn.addEventListener("mouseenter",()=>{
 
-    observer.observe(img);
+btn.style.transform="scale(1.05)";
 
 });
 
+btn.addEventListener("mouseleave",()=>{
 
-// Click image to open in full screen
-images.forEach(img=>{
-
-    img.addEventListener("click",()=>{
-
-        const overlay=document.createElement("div");
-
-        overlay.style.position="fixed";
-        overlay.style.top="0";
-        overlay.style.left="0";
-        overlay.style.width="100%";
-        overlay.style.height="100%";
-        overlay.style.background="rgba(0,0,0,0.9)";
-        overlay.style.display="flex";
-        overlay.style.justifyContent="center";
-        overlay.style.alignItems="center";
-        overlay.style.zIndex="9999";
-
-        const photo=document.createElement("img");
-
-        photo.src=img.src;
-        photo.style.maxWidth="90%";
-        photo.style.maxHeight="90%";
-        photo.style.borderRadius="15px";
-
-        overlay.appendChild(photo);
-
-        overlay.onclick=()=>overlay.remove();
-
-        document.body.appendChild(overlay);
-
-    });
+btn.style.transform="scale(1)";
 
 });
